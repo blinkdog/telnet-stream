@@ -16,9 +16,19 @@ It will filter out all the "TELNET stuff" and pass the rest on to you.
 
 Because TelnetInput and TelnetOutput are Node.js Transform streams,
 they support all the same operations that regular streams do. See the
-Node.js Stream API for more details.
+[Node.js Stream API](http://nodejs.org/api/stream.html) for more details.
 
-    // TODO: Simple TELNET client code
+    var net = require('net');
+    var TelnetInput = require('telnet-stream').TelnetInput
+    var TelnetOutput = require('telnet-stream').TelnetOutput
+
+    var socket = net.createConnection(3000, 'godwars2.org', function() {
+        var telnetInput = new TelnetInput();
+        var telnetOutput = new TelnetOutput();
+
+        socket.pipe(telnetInput).pipe(process.stdout);
+        process.stdin.pipe(telnetOutput).pipe(socket);
+    });
 
 ## Usage
 
