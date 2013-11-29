@@ -1,0 +1,27 @@
+{
+    "name": "telnet-stream",
+    "version": "0.0.2",
+    "scripts": {
+        "postinstall": "cake compile"
+    },
+    "dependencies": {
+        "coffee-script": "1.6.x"
+    },
+    "devDependencies": {
+        "mocha": "1.14.x",
+	"should": "2.1.x"
+    },
+    "engines": {
+        "node": "0.10.x"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/blinkdog/telnet-stream.git"
+    },
+    "licenses": [
+        {
+            "type": "GNU Affero General Public License, Version 3",
+            "url": "https://www.gnu.org/licenses/agpl-3.0.txt"
+        }
+    ]
+}
