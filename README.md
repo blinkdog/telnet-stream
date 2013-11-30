@@ -19,8 +19,8 @@ they support all the same operations that regular streams do. See the
 [Node.js Stream API](http://nodejs.org/api/stream.html) for more details.
 
     var net = require('net');
-    var TelnetInput = require('telnet-stream').TelnetInput
-    var TelnetOutput = require('telnet-stream').TelnetOutput
+    var TelnetInput = require('telnet-stream').TelnetInput;
+    var TelnetOutput = require('telnet-stream').TelnetOutput;
 
     var socket = net.createConnection(3000, 'godwars2.org', function() {
         var telnetInput = new TelnetInput();
@@ -38,38 +38,284 @@ a subnegotiation. telnet-stream has you covered in those situations.
 
 ### TelnetInput
 
-    // TODO: Finish documentation
+TelnetInput is a Transform stream for the input side of TELNET.
+TELNET commands, options, and negotiations are emitted as events.
+Non-TELNET data is passed transparently as input data.
 
-#### Events
+#### Event: 'command'
 
-##### command
-##### do
-##### dont
-##### sub
-##### will
-##### wont
+When the remote system issues a TELNET command that is not option
+negotiation, TelnetInput will emit a 'command' event.
+
+    var telnetIn = new TelnetInput();
+    telnetIn.on('command', function(command) {
+        // Received: IAC <command> - See RFC 854
+    });
+
+#### Event: 'do'
+
+When the remote system wants to request that the local system
+perform some function or obey some protocol, TelnetInput will
+emit a 'do' event:
+
+    var telnetIn = new TelnetInput();
+    telnetIn.on('do', function(option) {
+        // Received: IAC DO <option> - See RFC 854
+    });
+
+#### Event: 'dont'
+
+When the remote system wants to request that the local system
+NOT perform some function or NOT obey some protocol, TelnetInput
+will emit a 'dont' event:
+
+    var telnetIn = new TelnetInput();
+    telnetIn.on('dont', function(option) {
+        // Received: IAC DONT <option> - See RFC 854
+    });
+
+#### Event: 'sub'
+
+After negotiating an option, either the local or remote system
+may engage in a more complex subnegotiation. For example, the
+server and client may agree to use encryption, and then use
+subnegotiation to agree on the parameters of that encryption.
+
+    var telnetIn = new TelnetInput();
+    telnetIn.on('sub', function(option, buffer) {
+        // Received: IAC SB <option> <buffer> IAC SE - See RFC 855
+    });
+
+#### Event: 'will'
+
+When the remote system wants to offer that it will perform some
+function or obey some protocol for the local system, TelnetInput
+will emit a 'will' event:
+
+    var telnetIn = new TelnetInput();
+    telnetIn.on('will', function(option) {
+        // Received: IAC WILL <option> - See RFC 854
+    });
+
+#### Event: 'wont'
+
+When the remote system wants to refuse to perform some function
+or obey some protocol for the local system, TelnetInput will
+emit a 'wont' event:
+
+    var telnetIn = new TelnetInput();
+    telnetIn.on('wont', function(option) {
+        // Received: IAC WONT <option> - See RFC 854
+    });
 
 ### TelnetOutput
 
-    // TODO: Finish documentation
+TelnetOutput is a Transform stream for the output side of TELNET.
+Data written to TelnetOutput is properly escaped to ensure that
+it isn't interpreted as a TELNET command. It also has methods for
+sending TELNET option negotiations and subnegotiations.
 
 #### IAC escape
 
-#### Methods
+TELNET commands start with the Interpret as Command (IAC) octet.
+In order to send a literal IAC octet (one that is intended as data,
+not as a TELNET command), it must be sent as IAC IAC. TelnetOutput
+takes care of this transformation automatically.
 
-##### writeCommand
-##### writeDo
-##### writeDont
-##### writeSub
-##### writeWill
-##### writeWont
+#### writeCommand(command)
 
-### Example: Negotiate About Window Size (NAWS)
+* command - The command octet to send
 
-// TODO: Finish documentation
-Some text explaining the case for NAWS.
+Call this method to send a TELNET command to the remote system.
 
-    // TODO: Some example code demonstrating NAWS support
+    var NOP = 241; // No operation. -- See RFC 854
+    var telnetOut = new TelnetOutput();
+    // Sends: IAC NOP
+    telnetOut.writeCommand(NOP);
+
+#### writeDo(option)
+
+* option - The option octet to request of the remote system
+
+Call this method to send a TELNET DO option negotiation to the remote
+system. A DO request is sent when the local system wants the remote
+system to perform some function or obey some protocol.
+
+    var NAWS = 31; // Negotiate About Window Size -- See RFC 1073
+    var telnetOut = new TelnetOutput();
+    // Sends: IAC DO NAWS
+    telnetOut.writeDo(NAWS);
+
+#### writeDont(option)
+
+* option - The option octet to request of the remote system
+
+Call this method to send a TELNET DONT option negotiation to the remote
+system. A DONT request is sent when the local system wants the remote
+system to NOT perform some function or NOT obey some protocol.
+
+    var NAWS = 31; // Negotiate About Window Size -- See RFC 1073
+    var telnetOut = new TelnetOutput();
+    // Sends: IAC DONT NAWS
+    telnetOut.writeDont(NAWS);
+
+#### writeSub(option, buffer)
+
+* option - The option octet; identifies what the subnegotiation is about
+* buffer - The buffer containing the subnegotiation data to send
+
+Call this method to send a TELNET subnegotiation to the remote system.
+After the local and remote system have negotiated an option, then
+subnegotiation information can be sent.
+
+See Example #2: Negotiate About Window Size (NAWS) below.
+
+#### writeWill(option)
+
+* option - The option octet to offer to the remote system
+
+Call this method to send a TELNET WILL option negotiation to the remote
+system. A WILL offer is sent when the local system wants to inform the
+remote system that it will perform some function or obey some protocol.
+
+    var NAWS = 31; // Negotiate About Window Size -- See RFC 1073
+    var telnetOut = new TelnetOutput();
+    // Sends: IAC WILL NAWS
+    telnetOut.writeWill(NAWS);
+
+#### writeWont(option)
+
+* option - The option octet to refuse to the remote system
+
+Call this method to send a TELNET WONT option negotiation to the remote
+system. A WONT refusal is sent when the remote system has requested that
+the local system perform some function or obey some protocol, and the
+local system is refusing to do so.
+
+    var NAWS = 31; // Negotiate About Window Size -- See RFC 1073
+    var telnetOut = new TelnetOutput();
+    // Sends: IAC WONT NAWS
+    telnetOut.writeWont(NAWS);
+
+### Example 1: Options Actively Refused
+
+The simple example above provided a simple TELNET client.
+However, all TELNET commands were filtered and ignored.
+A service might think one was using a very dumb client,
+because it refuses to acknowledge TELNET negotiations.
+
+This example does the same thing, but actively refuses
+all TELNET options. If the remote service offers something,
+we decline to take advantage of it. If the remote service
+requests that we do something, we refuse to do it.
+
+    var net = require('net');
+    var TelnetInput = require('telnet-stream').TelnetInput;
+    var TelnetOutput = require('telnet-stream').TelnetOutput;
+
+    var socket = net.createConnection(3000, 'godwars2.org', function() {
+        var telnetInput = new TelnetInput();
+        var telnetOutput = new TelnetOutput();
+
+        telnetInput.on('do', function(option) {
+            telnetOutput.writeWont(option);
+        });
+
+        telnetInput.on('will', function(option) {
+            telnetOutput.writeDont(option);
+        });
+
+        socket.pipe(telnetInput).pipe(process.stdout);
+        process.stdin.pipe(telnetOutput).pipe(socket);
+    });
+
+Note that incoming 'dont' and 'wont' events are ignored.
+This is OK because they are the expected state. TELNET
+negotiations involve changes to the current state. As a
+rule, we don't acknowledge things that we already expect.
+
+### Example 2: Negotiate About Window Size (NAWS)
+
+There is a TELNET option called "Negotiate About Window Size" (NAWS)
+that allows the server to learn the dimensions of the client's output
+window. This is useful is some cases, as the server can wrap text
+output at an appropriate boundary, implement a text windowing system,
+or other things that depend on client metrics.
+
+#### Server Side
+
+This code implements a simple TELNET server that listens for
+NAWS subnegotiations and reports the client's window size
+to the console.
+
+    var NAWS = 31; // Negotiate About Window Size -- See RFC 1073
+    var net = require('net');
+    var TelnetInput = require('telnet-stream').TelnetInput;
+    var TelnetOutput = require('telnet-stream').TelnetOutput;
+
+    var serverSocket = net.createServer(function(connection) {
+        var telnetInput = new TelnetInput();
+        var telnetOutput = new TelnetOutput();
+
+        telnetInput.on('sub', function(option, buffer) {
+            if(option === NAWS) {
+                var width = buffer.readInt16BE(0);
+                var height = buffer.readInt16BE(2);
+                console.log( 'Client window: ' + width + 'x' + height);
+            }
+        });
+
+        connection.pipe(telnetInput).pipe(process.stdout);
+        process.stdin.pipe(telnetOutput).pipe(connection);
+
+        telnetOutput.writeDo(NAWS);
+    });
+
+    serverSocket.listen(3000);
+
+#### Client Side
+
+This code implements a simple TELNET client that sends NAWS
+subnegotiations when the output window is resized. Note that
+it only sends NAWS subnegotiations after it has confirmed
+that the server supports and wants to hear about them.
+
+    var NAWS = 31; // Negotiate About Window Size -- See RFC 1073
+    var net = require('net');
+    var TelnetInput = require('telnet-stream').TelnetInput;
+    var TelnetOutput = require('telnet-stream').TelnetOutput;
+
+    var socket = net.createConnection(3000, function() {
+        var telnetInput = new TelnetInput();
+        var telnetOutput = new TelnetOutput();
+        var serverNawsOk = false;
+
+        var sendWindowSize = function() {
+            var nawsBuffer = new Buffer(4);
+            nawsBuffer.writeInt16BE(process.stdout.columns, 0);
+            nawsBuffer.writeInt16BE(process.stdout.rows, 2);
+            telnetOutput.writeSub(NAWS, nawsBuffer);
+        };
+
+        telnetInput.on('do', function(option) {
+            if(option === NAWS) {
+                serverNawsOk = true;
+                telnetOutput.writeWill(NAWS);
+                sendWindowSize();
+            }
+        });
+
+        process.stdout.on('resize', function() {
+            if(serverNawsOk) {
+                sendWindowSize();
+            }
+        });
+
+        socket.pipe(telnetInput).pipe(process.stdout);
+        process.stdin.pipe(telnetOutput).pipe(socket);
+
+        telnetOutput.writeWill(NAWS);
+    });
 
 ## Limitations
 
