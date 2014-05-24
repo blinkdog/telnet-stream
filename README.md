@@ -372,6 +372,17 @@ telnet-stream DOES NOT respect this part of the specification. The character
 following a CR in the data stream is not modified in any way. If you want
 or need this behavior, you will need to modify telnet-stream.
 
+## Development
+
+In order to make modifications to telnet-stream, you'll need to
+establish a development environment:
+
+    git clone https://github.com/blinkdog/telnet-stream.git
+    npm install
+    cake rebuild
+
+The source files are located in src/coffee
+
 ## License
 
 telnet-stream is Copyright 2013 Patrick Meade.

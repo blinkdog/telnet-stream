@@ -1,27 +1,42 @@
 {
     "name": "telnet-stream",
-    "version": "0.0.3",
-    "scripts": {
-        "postinstall": "cake compile"
-    },
-    "dependencies": {
-        "coffee-script": "1.6.x"
-    },
-    "devDependencies": {
-        "mocha": "1.14.x",
-	"should": "2.1.x"
-    },
-    "engines": {
-        "node": "0.10.x"
-    },
+    "version": "0.0.4",
+    "description": "Transform streams for TELNET protocol",
+    "keywords": [
+        "do",
+        "dont",
+        "event",
+        "MUD",
+        "MOO",
+        "MUSH",
+        "MUX",
+        "subnegotiation",
+        "protocol",
+        "rfc854",
+        "rfc855",
+        "stream",
+        "TELNET",
+        "Transform",
+        "will",
+        "wont"
+    ],
+    "homepage": "https://github.com/blinkdog/telnet-stream",
+    "bugs": "https://github.com/blinkdog/telnet-stream/issues",
+    "license": "AGPL-3.0",
+    "author": "Patrick Meade <veloxi@ticon.net>",
+    "files": [
+        "index.js",
+        "lib",
+        "package.json"
+    ],
+    "main": "telnet-stream",
     "repository": {
         "type": "git",
         "url": "https://github.com/blinkdog/telnet-stream.git"
     },
-    "licenses": [
-        {
-            "type": "GNU Affero General Public License, Version 3",
-            "url": "https://www.gnu.org/licenses/agpl-3.0.txt"
-        }
-    ]
+    "devDependencies": {
+        "coffee-script": "1.7.x",
+        "mocha": "1.19.x",
+        "should": "3.3.x"
+    }
 }

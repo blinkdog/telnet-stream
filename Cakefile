@@ -1,5 +1,5 @@
 # Cakefile
-# Copyright 2013 Patrick Meade. All rights reserved.
+# Copyright 2014 Patrick Meade. All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -38,12 +38,12 @@ clean = (callback) ->
     callback?()
 
 compile = (callback) ->
-  exec 'coffee -o lib/ -c src/coffee', (err, stdout, stderr) ->
+  exec 'node_modules/coffee-script/bin/coffee -o lib/ -c src/coffee', (err, stdout, stderr) ->
     throw err if err
     callback?()
 
 test = (callback) ->
-  exec 'mocha --compilers coffee:coffee-script --recursive', (err, stdout, stderr) ->
+  exec 'node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register --recursive', (err, stdout, stderr) ->
     console.log stdout + stderr
     callback?() if stderr.indexOf("AssertionError") < 0
 
