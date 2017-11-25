@@ -1,6 +1,6 @@
 {
     "name": "telnet-stream",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "TELNET protocol support library",
     "keywords": [
         "do",
@@ -26,7 +26,7 @@
     "license": "AGPL-3.0",
     "author": "Patrick Meade <veloxi@ticon.net>",
     "files": [
-        "CHANGELOG.md"
+        "CHANGELOG.md",
         "index.js",
         "lib",
         "LICENSE",
