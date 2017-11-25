@@ -18,12 +18,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 - in case of vulnerabilities
 
+## [1.0.1] - 2017-11-25
+
+### Changed
+- Minor clean up of TelnetOutput
+
 ## 1.0.0 - 2017-11-25
 
 ### Added
 - TelnetSocket to decorate a net.Socket
-- Options object to specify subnegotiation buffer size
-- Options object to specify subnegotiation error policy
+- Options object to specify subnegotiation buffer size and error policy
 - Emit error events on subnegotiation errors
 - Test coverage reporting with istanbul
 - LICENSE and README.md files to npm published archive
@@ -33,4 +37,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Default behavior for subnegotiation errors; bytes are kept not discarded
 - Location of test sources
 
-[Unreleased]: https://github.com/blinkdog/telnet-stream/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/blinkdog/telnet-stream/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/blinkdog/telnet-stream/compare/v1.0.0...v1.0.1
