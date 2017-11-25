@@ -1,1 +1,1 @@
-module.exports = require('./lib/telnetStream');
+module.exports = require("./lib/telnetStream");

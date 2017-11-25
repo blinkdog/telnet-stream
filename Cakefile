@@ -1,5 +1,5 @@
 # Cakefile
-# Copyright 2014 Patrick Meade. All rights reserved.
+# Copyright 2017 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -13,39 +13,65 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#----------------------------------------------------------------------
+
+BROWSER_COMMAND = "firefox --new-tab"
+
 #----------------------------------------------------------------------------
 
-{exec} = require 'child_process'
+{exec} = require "child_process"
 
-task 'build', 'Build the module', ->
-  compile -> test()
+#----------------------------------------------------------------------------
 
-task 'clean', 'Remove build cruft', ->
+task "check", "Check dependency versions", ->
+  project = require "./package.json"
+  for dependency of project.dependencies
+    checkVersion dependency, project.dependencies[dependency]
+  for dependency of project.devDependencies
+    checkVersion dependency, project.devDependencies[dependency]
+
+task "clean", "Remove build cruft", ->
   clean()
 
-task 'compile', 'Compile CoffeeScript to JavaScript', ->
-  compile()
+task "coverage", "Perform test coverage analysis", ->
+  clean -> compile -> test -> coverage()
 
-task 'rebuild', 'Rebuild the module', ->
+task "rebuild", "Rebuild the module", ->
   clean -> compile -> test()
-  
-task 'test', 'Test with Mocha specs', ->
-  test()
 
-clean = (callback) ->
-  exec 'rm -fR lib/*', (err, stdout, stderr) ->
+#----------------------------------------------------------------------------
+
+clean = (next) ->
+  exec "rm -fR lib/* test/*", (err, stdout, stderr) ->
     throw err if err
-    callback?()
+    next?()
 
-compile = (callback) ->
-  exec 'node_modules/coffee-script/bin/coffee -o lib/ -c src/coffee', (err, stdout, stderr) ->
+compile = (next) ->
+  exec "node_modules/.bin/coffee -o lib/ -c src/main/coffee", (err, stdout, stderr) ->
     throw err if err
-    callback?()
+    exec "node_modules/.bin/coffee -o test/ -c src/test/coffee", (err, stdout, stderr) ->
+      throw err if err
+      next?()
 
-test = (callback) ->
-  exec 'node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register --recursive', (err, stdout, stderr) ->
+coverage = (next) ->
+  exec "node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- --recursive", (err, stdout, stderr) ->
+    throw err if err
+    exec "#{BROWSER_COMMAND} coverage/lcov-report/index.html", (err, stdout, stderr) ->
+      throw err if err
+      next?()
+
+test = (next) ->
+  exec "node_modules/.bin/mocha --colors --recursive", (err, stdout, stderr) ->
     console.log stdout + stderr
-    callback?() if stderr.indexOf("AssertionError") < 0
+    next?() if stderr.indexOf("AssertionError") < 0
 
-#----------------------------------------------------------------------
+#----------------------------------------------------------------------------
+
+checkVersion = (dependency, version) ->
+  exec "npm --json info #{dependency}", (err, stdout, stderr) ->
+    depInfo = JSON.parse stdout
+    if depInfo["dist-tags"].latest isnt version
+      console.log "[OLD] #{dependency} is out of date #{version} vs. #{depInfo["dist-tags"].latest}"
+
+#----------------------------------------------------------------------------
 # end of Cakefile
