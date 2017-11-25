@@ -29,8 +29,8 @@
         "index.js",
         "lib",
         "LICENSE",
-        "package.json"
-        "README.md",
+        "package.json",
+        "README.md"
     ],
     "main": "telnet-stream",
     "repository": {
