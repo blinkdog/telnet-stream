@@ -14,16 +14,32 @@ decorate a regular socket. It will filter out all the "TELNET stuff"
 and pass the remaining data on to you.
 
     // get references to the required stuff
-    var net = require('net');
-    var TelnetSocket = require('telnet-stream').TelnetSocket;
+    var TelnetSocket, net, socket, tSocket;
+
+    net = require("net");
+
+    ({TelnetSocket} = require("telnet-stream"));
+
     // create a Socket connection
-    var socket = net.createConnection(3000, 'godwars2.org');
+    socket = net.createConnection(3000, "godwars2.org");
+
     // decorate the Socket connection as a TelnetSocket
-    var tSocket = new TelnetSocket(socket);
-    // send the TelnetSocket output to the standard output (terminal)
-    tSocket.pipe(process.stdout);
-    // send the standard input (keyboard) to the TelnetSocket
-    process.stdin.pipe(tSocket);
+    tSocket = new TelnetSocket(socket);
+
+    // if the socket closes, terminate the program
+    tSocket.on("close", function() {
+      return process.exit();
+    });
+
+    // if we get any data, display it to stdout
+    tSocket.on("data", function(buffer) {
+      return process.stdout.write(buffer.toString("utf8"));
+    });
+
+    // if the user types anything, send it to the socket
+    process.stdin.on("data", function(buffer) {
+      return tSocket.write(buffer.toString("utf8"));
+    });
 
 ## Usage
 Maybe you have more complex needs. Perhaps you need certain options
@@ -187,23 +203,43 @@ all TELNET options. If the remote service offers something,
 we decline to take advantage of it. If the remote service
 requests that we do something, we refuse to do it.
 
-    var net = require('net');
-    var TelnetSocket = require('telnet-stream').TelnetSocket;
-    var socket = net.createConnection(3000, 'godwars2.org');
-    var tSocket = new TelnetSocket(socket);
+    // get references to the required stuff
+    var TelnetSocket, net, socket, tSocket;
+
+    net = require("net");
+
+    ({TelnetSocket} = require("telnet-stream"));
+
+    // create a Socket connection
+    socket = net.createConnection(3000, "godwars2.org");
+
+    // decorate the Socket connection as a TelnetSocket
+    tSocket = new TelnetSocket(socket);
+
+    // if the socket closes, terminate the program
+    tSocket.on("close", function() {
+      return process.exit();
+    });
+
+    // if we get any data, display it to stdout
+    tSocket.on("data", function(buffer) {
+      return process.stdout.write(buffer.toString("utf8"));
+    });
 
     // tell remote we WONT do anything we're asked to DO
-    tSocket.on('do', function(option) {
-        tSocket.writeWont(option);
+    tSocket.on("do", function(option) {
+      return tSocket.writeWont(option);
     });
 
     // tell the remote DONT do whatever they WILL offer
-    tSocket.on('will', function(option) {
-        tSocket.writeDont(option);
+    tSocket.on("will", function(option) {
+      return tSocket.writeDont(option);
     });
 
-    tSocket.pipe(process.stdout);
-    process.stdin.pipe(tSocket);
+    // if the user types anything, send it to the socket
+    process.stdin.on("data", function(buffer) {
+      return tSocket.write(buffer.toString("utf8"));
+    });
 
 This code is mostly the same as Example 0 except that we respond
 to incoming 'do' and 'will' events sent by the remote side.
@@ -225,29 +261,39 @@ This code implements a simple TELNET server that listens for
 NAWS subnegotiations and reports the client's window size
 to the console.
 
-    // setup stuff -- see the other examples for details
-    var NAWS = 31; // Negotiate About Window Size -- See RFC 1073
-    var net = require('net');
-    var TelnetSocket = require('telnet-stream').TelnetSocket;
+    // some variables that we'll use
+    var NAWS, TelnetSocket, net, server;
+
+    // Negotiate About Window Size -- See RFC 1073
+    NAWS = 31;
+
+    // get references to the required stuff
+    net = require("net");
+
+    ({TelnetSocket} = require("telnet-stream"));
 
     // create a service to listen for incoming connections
-    var server = net.createServer(function(socket) {
-        // wrap the socket as a TelnetSocket
-        var tSocket = new TelnetSocket(socket);
-
-        // if they send us a subnegotiation
-        tSocket.on('sub', function(option, buffer) {
-            // if they are telling us their window size
-            if(option === NAWS) {
-                // display it to the console
-                var width = buffer.readInt16BE(0);
-                var height = buffer.readInt16BE(2);
-                console.log('Client window: ' + width + 'x' + height);
-            }
-        });
-
-        // tell the client to send window size subnegotiations
-        tSocket.writeDo(NAWS);
+    server = net.createServer(function(socket) {
+      var tSocket;
+      // wrap the socket as a TelnetSocket
+      tSocket = new TelnetSocket(socket);
+      // if we get any data, display it to the console
+      tSocket.on("data", function(buffer) {
+        return process.stdout.write(buffer.toString("utf8"));
+      });
+      // if they send us a subnegotiation
+      tSocket.on("sub", function(option, buffer) {
+        var height, width;
+        // if they are telling us their window size
+        if (option === NAWS) {
+          // display it to the console
+          width = buffer.readInt16BE(0);
+          height = buffer.readInt16BE(2);
+          return process.stdout.write(`Client window: ${width}x${height}\n`);
+        }
+      });
+      // tell the client to send window size subnegotiations
+      return tSocket.writeDo(NAWS);
     });
 
     // start our server listening on port 3000
@@ -259,54 +305,75 @@ subnegotiations when the output window is resized. Note that
 it only sends NAWS subnegotiations after it has confirmed
 that the server supports and wants to hear about them.
 
-    // setup stuff -- see the other examples for details
-    var NAWS = 31; // Negotiate About Window Size -- See RFC 1073
-    var net = require('net');
-    var TelnetSocket = require('telnet-stream').TelnetSocket;
-    var socket = net.createConnection(3000);
-    var tSocket = new TelnetSocket(socket);
+    // some variables that we'll use
+    var NAWS, TelnetSocket, net, sendWindowSize, serverNawsOk, socket, tSocket;
 
-    // flag to indicate if its OK to send window size
-    // subnegotiations to the server
-    var serverNawsOk = false;
+    // Negotiate About Window Size -- See RFC 1073
+    NAWS = 31;
+
+    // get references to the required stuff
+    net = require("net");
+
+    ({TelnetSocket} = require("telnet-stream"));
+
+    // create a Socket connection
+    socket = net.createConnection(3000);
+
+    // decorate the Socket connection as a TelnetSocket
+    tSocket = new TelnetSocket(socket);
+
+    // flag to indicate if its OK to send window size subnegotiations to the server
+    serverNawsOk = false;
 
     // function: send window size to the server
-    var sendWindowSize = function() {
-        // create a buffer
-        var nawsBuffer = new Buffer(4);
-        // fill the buffer up with our window dimensions
-        nawsBuffer.writeInt16BE(process.stdout.columns, 0);
-        nawsBuffer.writeInt16BE(process.stdout.rows, 2);
-        // send that buffer as a subnegotiation to the server
-        tSocket.writeSub(NAWS, nawsBuffer);
+    sendWindowSize = function() {
+      var nawsBuffer;
+      // create a buffer
+      nawsBuffer = Buffer.alloc(4);
+      // fill the buffer up with our window dimensions
+      nawsBuffer.writeInt16BE(process.stdout.columns, 0);
+      nawsBuffer.writeInt16BE(process.stdout.rows, 2);
+      // send that buffer as a subnegotiation to the server
+      return tSocket.writeSub(NAWS, nawsBuffer);
     };
 
+    // if the socket closes, terminate the program
+    tSocket.on("close", function() {
+      return process.exit();
+    });
+
+    // if we get any data, display it to stdout
+    tSocket.on("data", function(buffer) {
+      return process.stdout.write(buffer.toString("utf8"));
+    });
+
     // if the server sends us a DO negotiation
-    telnetInput.on('do', function(option) {
-        // if that negotiation is about window size
-        if(option === NAWS) {
-            // set the flag indicating that the server has
-            // told us it's OK to send our window size
-            serverNawsOk = true;
-            // tell the server that we WILL send window size
-            telnetOutput.writeWill(NAWS);
-            // send our current window size to the server
-            sendWindowSize();
-        }
+    tSocket.on("do", function(option) {
+      // if that negotiation is about window size
+      if (option === NAWS) {
+        // set the flag indicating that the server has
+        // told us it's OK to send our window size
+        serverNawsOk = true;
+        // tell the server that we WILL send window size
+        tSocket.writeWill(NAWS);
+        // send our current window size to the server
+        return sendWindowSize();
+      }
+    });
+
+    // if the user types anything, send it to the socket
+    process.stdin.on("data", function(buffer) {
+      return tSocket.write(buffer.toString("utf8"));
     });
 
     // if the terminal window is resized
-    process.stdout.on('resize', function() {
-        // if we're OK to send our window size to the server
-        if(serverNawsOk) {
-            // send the new window size to the server
-            sendWindowSize();
-        }
+    process.stdout.on("resize", function() {
+      // if we're OK to send our window size to the server
+      if (serverNawsOk) {
+        // send the new window size to the server
+        return sendWindowSize();
+      }
     });
-
-    // setup stuff -- see the other examples for details
-    tSocket.pipe(process.stdout);
-    process.stdin.pipe(tSocket);
 
 Run this program and it should immediately send the current
 size of the terminal window to the server. After that, you

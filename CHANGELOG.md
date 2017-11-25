@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 - in case of vulnerabilities
 
+## [1.0.4] - 2017-11-25
+### Added
+- Example source code to ensure examples function properly
+### Changed
+- Examples in README.md to make them functional
+
 ## [1.0.3] - 2017-11-25
 ### Changed
 - Minor clean up of package.json
@@ -43,7 +49,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Default behavior for subnegotiation errors; bytes are kept not discarded
 - Location of test sources
 
-[Unreleased]: https://github.com/blinkdog/telnet-stream/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/blinkdog/telnet-stream/compare/v1.0.4...HEAD
+[1.0.4]: https://github.com/blinkdog/telnet-stream/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/blinkdog/telnet-stream/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/blinkdog/telnet-stream/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/blinkdog/telnet-stream/compare/v1.0.0...v1.0.1
