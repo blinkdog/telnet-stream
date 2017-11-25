@@ -1,6 +1,6 @@
 {
     "name": "telnet-stream",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "TELNET protocol support library",
     "keywords": [
         "do",
