@@ -1,5 +1,5 @@
 # telnetStreamTest.coffee
-# Copyright 2013 Patrick Meade. All rights reserved.
+# Copyright 2017 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -15,18 +15,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-should = require 'should'
-TelnetStream = require('../lib/telnetStream')
+should = require "should"
+TelnetStream = require("../lib/telnetStream")
 
-describe 'TelnetStream', ->
-  it 'should be OK', ->
-    TelnetStream.should.be.ok
-    
-  it 'should export a reference to TelnetInput', ->
-    TelnetStream.TelnetInput.should.be.ok
+describe "TelnetStream", ->
+  it "should be OK", ->
+    TelnetStream.should.be.ok()
 
-  it 'should export a reference to TelnetOutput', ->
-    TelnetStream.TelnetOutput.should.be.ok
+  it "should export a reference to TelnetInput", ->
+    TelnetStream.TelnetInput.should.be.ok()
+
+  it "should export a reference to TelnetOutput", ->
+    TelnetStream.TelnetOutput.should.be.ok()
+
+  it "should export a reference to TelnetSocket", ->
+    TelnetStream.TelnetSocket.should.be.ok()
 
 #----------------------------------------------------------------------------
 # end of telnetStreamTest.coffee

@@ -1,7 +1,7 @@
 {
     "name": "telnet-stream",
-    "version": "0.0.4",
-    "description": "Transform streams for TELNET protocol",
+    "version": "1.0.0",
+    "description": "TELNET protocol support library",
     "keywords": [
         "do",
         "dont",
@@ -14,6 +14,7 @@
         "protocol",
         "rfc854",
         "rfc855",
+        "socket",
         "stream",
         "TELNET",
         "Transform",
@@ -27,7 +28,9 @@
     "files": [
         "index.js",
         "lib",
+        "LICENSE",
         "package.json"
+        "README.md",
     ],
     "main": "telnet-stream",
     "repository": {
@@ -35,8 +38,9 @@
         "url": "https://github.com/blinkdog/telnet-stream.git"
     },
     "devDependencies": {
-        "coffee-script": "1.7.x",
-        "mocha": "1.19.x",
-        "should": "3.3.x"
+        "coffeescript": "2.0.2",
+        "istanbul": "0.4.5",
+        "mocha": "4.0.1",
+        "should": "13.1.3"
     }
 }
