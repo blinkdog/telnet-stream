@@ -39,6 +39,7 @@
         "url": "https://github.com/blinkdog/telnet-stream.git"
     },
     "devDependencies": {
+        "@types/node": "^14.0.26",
         "coffeescript": "2.0.2",
         "istanbul": "0.4.5",
         "mocha": "4.0.1",

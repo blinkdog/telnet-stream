@@ -1,5 +1,10 @@
+/**
+ * Type definitions for telnet-stream 1.0.4
+ * Author: Voakie <contact@voakie.com>
+ */
+
 declare module "telnet-stream" {
-  import { Socket, SocketConnectOpts } from "net";
+  import { Socket, SocketConnectOpts, AddressInfo } from "net";
   import { Transform, TransformOptions } from "stream";
 
   export interface TelnetSocketOptions {
@@ -7,7 +12,7 @@ declare module "telnet-stream" {
     errorPolicy?: "keepBoth" | "keepData" | "discardBoth";
   }
 
-  export interface TelnetIO_Options
+  export interface TelnetInputOptions
     extends TransformOptions,
       TelnetSocketOptions {}
 
@@ -28,7 +33,7 @@ declare module "telnet-stream" {
      * });
      * ```
      */
-    on(name: "command", callback: (command: number) => void);
+    on(name: "command", callback: (command: number) => void): void;
     /**
      * When the remote system wants to request that the local system
      * perform some function or obey some protocol, TelnetSocket will
@@ -41,7 +46,7 @@ declare module "telnet-stream" {
      * });
      * ```
      */
-    on(name: "do", callback: (option: number) => void);
+    on(name: "do", callback: (option: number) => void): void;
     /**
      * When the remote system wants to request that the local system
      * NOT perform some function or NOT obey some protocol, TelnetSocket
@@ -54,7 +59,7 @@ declare module "telnet-stream" {
      * });
      * ```
      */
-    on(name: "dont", callback: (option: number) => void);
+    on(name: "dont", callback: (option: number) => void): void;
     /**
      * After negotiating an option, either the local or remote system
      * may engage in a more complex subnegotiation. For example, the
@@ -68,7 +73,7 @@ declare module "telnet-stream" {
      * });
      * ```
      */
-    on(name: "sub", callback: (option: number, buffer: Buffer) => void);
+    on(name: "sub", callback: (option: number, buffer: Buffer) => void): void;
     /**
      * When the remote system wants to offer that it will perform some
      * function or obey some protocol for the local system, TelnetSocket
@@ -81,7 +86,7 @@ declare module "telnet-stream" {
      * });
      * ```
      */
-    on(name: "will", callback: (option: number) => void);
+    on(name: "will", callback: (option: number) => void): void;
     /**
      * When the remote system wants to refuse to perform some function
      * or obey some protocol for the local system, TelnetSocket will
@@ -94,7 +99,7 @@ declare module "telnet-stream" {
      * });
      * ```
      */
-    on(name: "wont", callback: (option: number) => void);
+    on(name: "wont", callback: (option: number) => void): void;
     /**
      * Call this method to send a TELNET command to the remote system.
      *
@@ -182,39 +187,35 @@ declare module "telnet-stream" {
     writeSub(option: number, buffer: any): void;
 
     /** Inherited from `net` */
-    on(name: "close", callback: (hadError: boolean) => void);
+    on(name: "close", callback: (hadError: boolean) => void): void;
     /** Inherited from `net` */
-    on(name: "connect", callback: () => void);
+    on(name: "connect", callback: () => void): void;
     /** Inherited from `net` */
-    on(name: "data", callback: (data: Buffer | string) => void);
+    on(name: "data", callback: (data: Buffer | string) => void): void;
     /** Inherited from `net` */
-    on(name: "drain", callback: () => void);
+    on(name: "drain", callback: () => void): void;
     /** Inherited from `net` */
-    on(name: "end", callback: () => void);
+    on(name: "end", callback: () => void): void;
     /** Inherited from `net` */
-    on(name: "error", callback: (e: Error) => void);
+    on(name: "error", callback: (e: Error) => void): void;
     /** Inherited from `net` */
-    on(name: "lookup", callback: () => void);
+    on(name: "lookup", callback: () => void): void;
     /** Inherited from `net` */
-    on(name: "timeout", callback: () => void);
+    on(name: "timeout", callback: () => void): void;
     /** Inherited from `net` */
-    address(): Object | string | null;
+    address(): AddressInfo | string | null;
     /** Inherited from `net` */
-    connect(opts: SocketConnectOpts, listener?: () => void);
+    connect(opts: SocketConnectOpts, listener?: () => void): Socket;
     /** Inherited from `net` */
-    connect(path: string, listener?: () => void);
+    connect(path: string, listener?: () => void): Socket;
     /** Inherited from `net` */
-    connect(port: number, host?: string, listener?: () => void);
+    connect(port: number, host?: string, listener?: () => void): Socket;
     /** Inherited from `net` */
     destroy(error?: Error): Socket;
     /** Inherited from `net` */
-    end(
-      data?: string | Buffer | Uint8Array,
-      encoding?: string,
-      callback?: () => void
-    );
+    end(data?: string, encoding?: string, callback?: () => void): Socket;
     /** Inherited from `net` */
-    end(data?: string | Buffer | Uint8Array, callback?: () => void);
+    end(data?: Buffer | Uint8Array, callback?: () => void): Socket;
     /** Inherited from `net` */
     pause(): Socket;
     /** Inherited from `net` */
@@ -232,15 +233,13 @@ declare module "telnet-stream" {
     /** Inherited from `net` */
     unref(): Socket;
     /** Inherited from `net` */
-    write(
-      data: string | Buffer | Uint8Array,
-      encoding?: string,
-      callback?: () => void
-    );
+    write(data: string, encoding?: string, callback?: () => void): boolean;
+    /** Inherited from `net` */
+    write(data: Buffer | Uint8Array, callback?: () => void): boolean;
   }
 
   export class TelnetInput extends Transform {
-    constructor(options?: TelnetIO_Options);
+    constructor(options?: TelnetInputOptions);
   }
 
   export class TelnetOutput extends Transform {
