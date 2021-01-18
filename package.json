@@ -31,7 +31,8 @@
         "lib",
         "LICENSE",
         "package.json",
-        "README.md"
+        "README.md",
+        "telnet-stream.d.ts"
     ],
     "main": "telnet-stream",
     "repository": {
@@ -39,9 +40,11 @@
         "url": "https://github.com/blinkdog/telnet-stream.git"
     },
     "devDependencies": {
+        "@types/node": "14.14.21",
         "coffeescript": "2.5.1",
         "mocha": "8.2.1",
         "nyc": "15.1.0",
         "should": "13.2.3"
-    }
+    },
+    "types": "./telnet-stream.d.ts"
 }

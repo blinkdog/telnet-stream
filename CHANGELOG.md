@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.0.5] - 2021-01-17
 ### Added
-- Contributor Voakie provided TypeScript definitions
+- Contributor Voakie provided TypeScript definitions for telnet-stream
 ### Changed
 - Modified check task to use Promises for dependency version checks
 - Modified coverage task to use nyc library instead of istanbul
