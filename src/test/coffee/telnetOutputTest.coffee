@@ -40,9 +40,9 @@ describe "TelnetOutput", ->
     testStream.should.have.property "_transform"
 
   it "should not duplicate anything not IAC", (done) ->
-    testData = new Buffer 255
+    testData = Buffer.alloc 255
     testData[i] = i for i in [0..254]
-    finalBuffer = new Buffer 255
+    finalBuffer = Buffer.alloc 255
     finalBufferIndex = 0
     testStream = new TelnetOutput()
     testStream.on "end", ->
@@ -57,9 +57,9 @@ describe "TelnetOutput", ->
     testStream.end testData
 
   it "should duplicate every IAC", (done) ->
-    testData = new Buffer 10
+    testData = Buffer.alloc 10
     testData[i] = TELNET_IAC for i in [0..9]
-    finalBuffer = new Buffer 20
+    finalBuffer = Buffer.alloc 20
     finalBufferIndex = 0
     testStream = new TelnetOutput()
     testStream.on "end", ->
@@ -79,7 +79,7 @@ describe "TelnetOutput", ->
       "writeDo", "writeDont", "writeSub", "writeWill", "writeWont"]
 
   it "should have writeCommand pass the command byte", (done) ->
-    finalBuffer = new Buffer 20
+    finalBuffer = Buffer.alloc 20
     finalBufferIndex = 0
     testStream = new TelnetOutput()
     testStream.on "end", ->
@@ -92,7 +92,7 @@ describe "TelnetOutput", ->
     testStream.end()
 
   it "should have writeDo emit IAC DO option", (done) ->
-    finalBuffer = new Buffer 20
+    finalBuffer = Buffer.alloc 20
     finalBufferIndex = 0
     testStream = new TelnetOutput()
     testStream.on "end", ->
@@ -106,7 +106,7 @@ describe "TelnetOutput", ->
     testStream.end()
 
   it "should have writeDont emit IAC DONT option", (done) ->
-    finalBuffer = new Buffer 20
+    finalBuffer = Buffer.alloc 20
     finalBufferIndex = 0
     testStream = new TelnetOutput()
     testStream.on "end", ->
@@ -120,7 +120,7 @@ describe "TelnetOutput", ->
     testStream.end()
 
   it "should have writeWill emit IAC WILL option", (done) ->
-    finalBuffer = new Buffer 20
+    finalBuffer = Buffer.alloc 20
     finalBufferIndex = 0
     testStream = new TelnetOutput()
     testStream.on "end", ->
@@ -134,7 +134,7 @@ describe "TelnetOutput", ->
     testStream.end()
 
   it "should have writeWont emit IAC WONT option", (done) ->
-    finalBuffer = new Buffer 20
+    finalBuffer = Buffer.alloc 20
     finalBufferIndex = 0
     testStream = new TelnetOutput()
     testStream.on "end", ->
@@ -148,7 +148,7 @@ describe "TelnetOutput", ->
     testStream.end()
 
   it "should have writeSub emit a proper subnegotiation", (done) ->
-    finalBuffer = new Buffer 20
+    finalBuffer = Buffer.alloc 20
     finalBufferIndex = 0
     testStream = new TelnetOutput()
     testStream.on "end", ->
@@ -165,13 +165,13 @@ describe "TelnetOutput", ->
       done()
     testStream.on "data", (chunk) ->
       finalBuffer[finalBufferIndex++] = chunk[i] for i in [0..chunk.length-1]
-    fakeBuffer = new Buffer 5
+    fakeBuffer = Buffer.alloc 5
     fakeBuffer[i] = (i+1) for i in [0..4]
     testStream.writeSub TELNET_FAKE_OPTION, fakeBuffer
     testStream.end()
 
   it "should have writeSub escape IACs in subnegotiations", (done) ->
-    finalBuffer = new Buffer 20
+    finalBuffer = Buffer.alloc 20
     finalBufferIndex = 0
     testStream = new TelnetOutput()
     testStream.on "end", ->
@@ -199,7 +199,7 @@ describe "TelnetOutput", ->
       done()
     testStream.on "data", (chunk) ->
       finalBuffer[finalBufferIndex++] = chunk[i] for i in [0..chunk.length-1]
-    fakeBuffer = new Buffer 5
+    fakeBuffer = Buffer.alloc 5
     fakeBuffer[i] = TELNET_IAC for i in [0..4]
     testStream.writeSub TELNET_FAKE_OPTION, fakeBuffer
     testStream.end()

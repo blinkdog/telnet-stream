@@ -549,9 +549,13 @@ You can see a coverage report by invoking the `coverage` target:
 
     node_modules/.bin/cake coverage
 
+## Acknowledgments
+* TypeScript defintions were kindly provided by contributor
+  [Voakie](https://github.com/Voakie)
+
 ## License
 telnet-stream  
-Copyright 2013-2017 Patrick Meade.
+Copyright 2013-2021 Patrick Meade.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as

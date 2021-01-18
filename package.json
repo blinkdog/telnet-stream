@@ -1,6 +1,6 @@
 {
     "name": "telnet-stream",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "TELNET protocol support library",
     "keywords": [
         "do",
@@ -24,7 +24,7 @@
     "homepage": "https://github.com/blinkdog/telnet-stream",
     "bugs": "https://github.com/blinkdog/telnet-stream/issues",
     "license": "AGPL-3.0",
-    "author": "Patrick Meade <veloxi@ticon.net>",
+    "author": "Patrick Meade <blinkdog@protonmail.com>",
     "files": [
         "CHANGELOG.md",
         "index.js",
@@ -39,9 +39,9 @@
         "url": "https://github.com/blinkdog/telnet-stream.git"
     },
     "devDependencies": {
-        "coffeescript": "2.0.2",
-        "istanbul": "0.4.5",
-        "mocha": "4.0.1",
-        "should": "13.1.3"
+        "coffeescript": "2.5.1",
+        "mocha": "8.2.1",
+        "nyc": "15.1.0",
+        "should": "13.2.3"
     }
 }
