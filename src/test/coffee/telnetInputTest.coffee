@@ -41,7 +41,7 @@ describe "TelnetInput", ->
 
   it "should pass normal text through", (done) ->
     testData = "Hello, TelnetInput!"
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
     testStream = new TelnetInput()
     testStream.on "end", ->
@@ -53,12 +53,12 @@ describe "TelnetInput", ->
     testStream.end testData
 
   it "should emit a WILL event", (done) ->
-    testBuffer = new Buffer 1024
+    testBuffer = Buffer.alloc 1024
     testBuffer[0] = TELNET_IAC
     testBuffer[1] = TELNET_WILL
     testBuffer[2] = TELNET_FAKE_OPTION
 
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
 
     testStream = new TelnetInput()
@@ -72,12 +72,12 @@ describe "TelnetInput", ->
     testStream.end testBuffer.slice 0, 3
 
   it "should emit a WONT event", (done) ->
-    testBuffer = new Buffer 1024
+    testBuffer = Buffer.alloc 1024
     testBuffer[0] = TELNET_IAC
     testBuffer[1] = TELNET_WONT
     testBuffer[2] = TELNET_FAKE_OPTION
 
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
 
     testStream = new TelnetInput()
@@ -91,12 +91,12 @@ describe "TelnetInput", ->
     testStream.end testBuffer.slice 0, 3
 
   it "should emit a DO event", (done) ->
-    testBuffer = new Buffer 1024
+    testBuffer = Buffer.alloc 1024
     testBuffer[0] = TELNET_IAC
     testBuffer[1] = TELNET_DO
     testBuffer[2] = TELNET_FAKE_OPTION
 
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
 
     testStream = new TelnetInput()
@@ -110,12 +110,12 @@ describe "TelnetInput", ->
     testStream.end testBuffer.slice 0, 3
 
   it "should emit a DONT event", (done) ->
-    testBuffer = new Buffer 1024
+    testBuffer = Buffer.alloc 1024
     testBuffer[0] = TELNET_IAC
     testBuffer[1] = TELNET_DONT
     testBuffer[2] = TELNET_FAKE_OPTION
 
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
 
     testStream = new TelnetInput()
@@ -129,11 +129,11 @@ describe "TelnetInput", ->
     testStream.end testBuffer.slice 0, 3
 
   it "should emit a command event", (done) ->
-    testBuffer = new Buffer 1024
+    testBuffer = Buffer.alloc 1024
     testBuffer[0] = TELNET_IAC
     testBuffer[1] = TELNET_GO_AHEAD
 
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
 
     testStream = new TelnetInput()
@@ -147,10 +147,10 @@ describe "TelnetInput", ->
     testStream.end testBuffer.slice 0, 2
 
   it "should properly escape IAC bytes", (done) ->
-    testBuffer = new Buffer 1024
+    testBuffer = Buffer.alloc 1024
     testBuffer[i] = TELNET_IAC for i in [0..7]
 
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
 
     testStream = new TelnetInput()
@@ -163,7 +163,7 @@ describe "TelnetInput", ->
     testStream.end testBuffer.slice 0, 8
 
   it "should emit a sub event", (done) ->
-    testBuffer = new Buffer 1024
+    testBuffer = Buffer.alloc 1024
     testBuffer[0] = TELNET_IAC
     testBuffer[1] = TELNET_SUB_BEGIN
     testBuffer[2] = TELNET_FAKE_OPTION
@@ -175,7 +175,7 @@ describe "TelnetInput", ->
     testBuffer[8] = TELNET_IAC
     testBuffer[9] = TELNET_SUB_END
 
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
 
     testStream = new TelnetInput()
@@ -192,7 +192,7 @@ describe "TelnetInput", ->
     testStream.end testBuffer.slice 0, 10
 
   it "should properly escape IAC bytes in a subnegotiation", (done) ->
-    testBuffer = new Buffer 1024
+    testBuffer = Buffer.alloc 1024
     testBuffer[0] = TELNET_IAC
     testBuffer[1] = TELNET_SUB_BEGIN
     testBuffer[2] = TELNET_FAKE_OPTION
@@ -205,7 +205,7 @@ describe "TelnetInput", ->
     testBuffer[9] = TELNET_IAC
     testBuffer[10] = TELNET_SUB_END
 
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
 
     testStream = new TelnetInput()
@@ -227,7 +227,7 @@ describe "TelnetInput", ->
 
   it "should emit an error for unescaped IAC in a subnegotiation", (done) ->
     errorCalled = false
-    testBuffer = new Buffer 1024
+    testBuffer = Buffer.alloc 1024
     testBuffer[0] = TELNET_IAC
     testBuffer[1] = TELNET_SUB_BEGIN
     testBuffer[2] = TELNET_FAKE_OPTION
@@ -239,7 +239,7 @@ describe "TelnetInput", ->
     testBuffer[8] = TELNET_IAC
     testBuffer[9] = TELNET_SUB_END
 
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
 
     testStream = new TelnetInput()
@@ -267,7 +267,7 @@ describe "TelnetInput", ->
     data = Buffer.alloc 128
     subEnd = Buffer.from [TELNET_IAC, TELNET_SUB_END]
     testBuffer = Buffer.concat [subBegin, data, subEnd]
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
     testStream = new TelnetInput
       bufferSize: 64
@@ -287,7 +287,7 @@ describe "TelnetInput", ->
 
   it "should discard subnegotiation errors if configured", (done) ->
     errorCalled = false
-    testBuffer = new Buffer 1024
+    testBuffer = Buffer.alloc 1024
     testBuffer[0] = TELNET_IAC
     testBuffer[1] = TELNET_SUB_BEGIN
     testBuffer[2] = TELNET_FAKE_OPTION
@@ -299,7 +299,7 @@ describe "TelnetInput", ->
     testBuffer[8] = TELNET_IAC
     testBuffer[9] = TELNET_SUB_END
 
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
 
     testStream = new TelnetInput
@@ -323,7 +323,7 @@ describe "TelnetInput", ->
 
   it "should discard IAC of subnegotiation errors if configured", (done) ->
     errorCalled = false
-    testBuffer = new Buffer 1024
+    testBuffer = Buffer.alloc 1024
     testBuffer[0] = TELNET_IAC
     testBuffer[1] = TELNET_SUB_BEGIN
     testBuffer[2] = TELNET_FAKE_OPTION
@@ -335,7 +335,7 @@ describe "TelnetInput", ->
     testBuffer[8] = TELNET_IAC
     testBuffer[9] = TELNET_SUB_END
 
-    finalBuffer = new Buffer 1024
+    finalBuffer = Buffer.alloc 1024
     finalBufferIndex = 0
 
     testStream = new TelnetInput

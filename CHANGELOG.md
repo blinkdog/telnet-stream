@@ -18,6 +18,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 - in case of vulnerabilities
 
+## [1.0.5] - 2021-01-17
+### Added
+- Contributor Voakie provided TypeScript definitions for telnet-stream
+### Changed
+- Modified check task to use Promises for dependency version checks
+- Modified coverage task to use nyc library instead of istanbul
+- Modified deprecated Buffer allocations in two test classes
+- Updated dev dependencies to latest versions in package.json
+
 ## [1.0.4] - 2017-11-25
 ### Added
 - Example source code to ensure examples function properly
@@ -49,7 +58,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Default behavior for subnegotiation errors; bytes are kept not discarded
 - Location of test sources
 
-[Unreleased]: https://github.com/blinkdog/telnet-stream/compare/v1.0.4...HEAD
+[Unreleased]: https://github.com/blinkdog/telnet-stream/compare/v1.0.5...HEAD
+[1.0.5]: https://github.com/blinkdog/telnet-stream/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/blinkdog/telnet-stream/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/blinkdog/telnet-stream/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/blinkdog/telnet-stream/compare/v1.0.1...v1.0.2

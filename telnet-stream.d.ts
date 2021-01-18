@@ -1,5 +1,5 @@
 /**
- * Type definitions for telnet-stream 1.0.4
+ * Type definitions for telnet-stream 1.0.5
  * Author: Voakie <contact@voakie.com>
  */
 
