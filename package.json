@@ -34,7 +34,7 @@
         "README.md",
         "telnet-stream.d.ts"
     ],
-    "main": "telnet-stream",
+    "main": "index.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/blinkdog/telnet-stream.git"
