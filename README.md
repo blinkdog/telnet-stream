@@ -417,7 +417,7 @@ options object with the `bufferSize` option:
     // this TelnetSocket can handle 16K subnegotiations!
     var tSocket = new TelnetSocket(socket, { bufferSize: 16384 });
 
-The default of 8K should sufficient for most use-cases.
+The default of 8K should be sufficient for most use-cases.
 
 #### errorPolicy
 During a subnegotiation, there are two valid sequences that begin with
@@ -542,7 +542,7 @@ establish a development environment:
     npm install
     node_modules/.bin/cake rebuild
 
-The source files are located in `src/main/coffee`.
+The source files are located in `src/main/coffee`.  
 The test source files are located in `src/test/coffee`.
 
 You can see a coverage report by invoking the `coverage` target:
